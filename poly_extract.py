@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from shapely.geometry import Polygon, LineString
 from shapely.ops import split
 
-PLAN_FILE = "fence.plan"   
+PLAN_FILE = "rule.plan"   
 
 
 # 1) Load polygon from QGroundControl .plan file
@@ -124,7 +124,7 @@ def find_bisector_for_angle(poly, angle, tol=1e-6, max_iter=60):
 def compute_2n_bisectors(poly):
     # number of vertices (last == first in exterior coords)
     # num_vertices = len(poly.exterior.coords) - 1
-    num_lines = 8
+    num_lines = 14
 
     bisectors = []
 
@@ -187,7 +187,7 @@ def plot_polygon_and_bisectors_clipped(poly, bisectors, out_file="bisectors_clip
     plt.xlabel("X (lon)")
     plt.ylabel("Y (lat)")
 
-    # plt.savefig(out_file, dpi=200)
+    # plt.savefig(out_file, dpi=3600)
     plt.show()
 
 
@@ -196,3 +196,4 @@ if __name__ == "__main__":
     bisectors = compute_2n_bisectors(poly)
     print(f"Found {len(bisectors)} bisecting lines")
     plot_polygon_and_bisectors_clipped(poly, bisectors, "bisectors_clipped.png")
+    
