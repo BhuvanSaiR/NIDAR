@@ -7,7 +7,7 @@ from shapely.geometry import Polygon, LineString
 from shapely.ops import split
 from shapely import affinity
 
-PLAN_FILE = "fence.plan"   # change if needed
+PLAN_FILE = "generated_polygons/polygon_5_sides.plan"   # change if needed
 
 FEET_PER_METER = 3.280839895  # approx conversion
 
