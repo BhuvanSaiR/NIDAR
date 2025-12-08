@@ -345,11 +345,11 @@ def plot_all(poly_m,
              to_point,
              separation_m,
              # full survey
-             angle_full,
-             path_full,
-             survey_len_full,
-             transit_len_full,
-             total_len_full,
+            #  angle_full,
+            #  path_full,
+            #  survey_len_full,
+            #  transit_len_full,
+            #  total_len_full,
              # split surveys
              angle_half1,
              path1,
@@ -390,10 +390,10 @@ def plot_all(poly_m,
                 ax.plot(cx_l, cy_l, color="purple", linestyle="--", linewidth=2)
 
     # Full reference survey
-    if path_full is not None:
-        xf, yf = path_full.xy
-        ax.plot(xf, yf, color="gray", linewidth=1.2,
-                label=f"Full survey (angle={angle_full:.1f}°)")
+    # if path_full is not None:
+    #     xf, yf = path_full.xy
+    #     ax.plot(xf, yf, color="gray", linewidth=1.2,
+    #             label=f"Full survey (angle={angle_full:.1f}°)")
         # mid_full = path_full.interpolate(0.5, normalized=True)
         # ax.scatter(mid_full.x, mid_full.y, color="gray", s=30, zorder=5)
         # ax.text(mid_full.x, mid_full.y, " full_mid", color="gray",
@@ -429,7 +429,7 @@ def plot_all(poly_m,
         ax.plot([tx, sx], [ty, sy], linestyle="--", color=color, linewidth=1)
         ax.plot([ex, tx], [ey, ty], linestyle="--", color=color, linewidth=1)
 
-    plot_to_legs(path_full, "gray")
+    # plot_to_legs(path_full, "gray")
     plot_to_legs(path1, "red")
     plot_to_legs(path2, "orange")
 
@@ -442,9 +442,9 @@ def plot_all(poly_m,
     separation_ft = separation_m * FEET_PER_METER
     longest_side_ft = longest_side_len_m * FEET_PER_METER
 
-    full_survey_ft = survey_len_full * FEET_PER_METER if survey_len_full is not None else 0
-    full_transit_ft = transit_len_full * FEET_PER_METER if transit_len_full is not None else 0
-    full_total_ft = total_len_full * FEET_PER_METER if total_len_full is not None else 0
+    # full_survey_ft = survey_len_full * FEET_PER_METER if survey_len_full is not None else 0
+    # full_transit_ft = transit_len_full * FEET_PER_METER if transit_len_full is not None else 0
+    # full_total_ft = total_len_full * FEET_PER_METER if total_len_full is not None else 0
 
     split_survey_len = survey_len1 + survey_len2
     split_transit_len = transit_len1 + transit_len2
@@ -459,10 +459,10 @@ def plot_all(poly_m,
         f"Boundary clearance: x/2 = {separation_m/2:.2f} m\n"
         f"Longest side: {longest_side_len_m:.1f} m ({longest_side_ft:.1f} ft)\n\n"
         f"FULL survey:\n"
-        f"  Best angle: {angle_full:.1f}°\n"
-        f"  Survey length: {survey_len_full:.1f} m ({full_survey_ft:.1f} ft)\n"
-        f"  TO legs: {transit_len_full:.1f} m ({full_transit_ft:.1f} ft)\n"
-        f"  TOTAL: {total_len_full:.1f} m ({full_total_ft:.1f} ft)\n\n"
+        # f"  Best angle: {angle_full:.1f}°\n"
+        # f"  Survey length: {survey_len_full:.1f} m ({full_survey_ft:.1f} ft)\n"
+        # f"  TO legs: {transit_len_full:.1f} m ({full_transit_ft:.1f} ft)\n"
+        # f"  TOTAL: {total_len_full:.1f} m ({full_total_ft:.1f} ft)\n\n"
         f"SPLIT (2 halves) survey (independent angles):\n"
         f"  Half1 angle: {angle_half1:.1f}°, Half2 angle: {angle_half2:.1f}°\n"
         f"  Survey length sum: {split_survey_len:.1f} m ({split_survey_ft:.1f} ft)\n"
@@ -522,10 +522,10 @@ def main():
             print("Please enter a valid number.")
 
     # 1) Best full-polygon survey (reference)
-    print("\nSearching best angle for FULL polygon survey...")
-    angle_full, path_full, survey_len_full, transit_len_full, total_len_full = find_best_angle_for_region(
-        poly_m, separation_m, (tx, ty), angle_step_deg=1.0
-    )
+    # print("\nSearching best angle for FULL polygon survey...")
+    # angle_full, path_full, survey_len_full, transit_len_full, total_len_full = find_best_angle_for_region(
+    #     poly_m, separation_m, (tx, ty), angle_step_deg=1.0
+    # )
 
     # 2) Best survey for each half, with its own angle
     print("Searching best angle for HALF 1 survey...")
@@ -538,11 +538,11 @@ def main():
         poly2_m, separation_m, (tx, ty), angle_step_deg=1.0
     )
 
-    print("\nFULL survey results:")
-    print(f"  Best angle: {angle_full:.2f}°")
-    print(f"  Survey length: {survey_len_full:.2f} m  ({survey_len_full * FEET_PER_METER:.2f} ft)")
-    print(f"  TO legs: {transit_len_full:.2f} m  ({transit_len_full * FEET_PER_METER:.2f} ft)")
-    print(f"  TOTAL: {total_len_full:.2f} m  ({total_len_full * FEET_PER_METER:.2f} ft)")
+    # print("\nFULL survey results:")
+    # print(f"  Best angle: {angle_full:.2f}°")
+    # print(f"  Survey length: {survey_len_full:.2f} m  ({survey_len_full * FEET_PER_METER:.2f} ft)")
+    # print(f"  TO legs: {transit_len_full:.2f} m  ({transit_len_full * FEET_PER_METER:.2f} ft)")
+    # print(f"  TOTAL: {total_len_full:.2f} m  ({total_len_full * FEET_PER_METER:.2f} ft)")
 
     print("\nHALF 1 survey results:")
     print(f"  Best angle: {angle_half1:.2f}°")
@@ -563,11 +563,11 @@ def main():
         cut_line,
         (tx, ty),
         separation_m,
-        angle_full,
-        path_full,
-        survey_len_full,
-        transit_len_full,
-        total_len_full,
+        # angle_full,
+        # path_full,
+        # survey_len_full,
+        # transit_len_full,
+        # total_len_full,
         angle_half1,
         path1,
         survey_len1,
