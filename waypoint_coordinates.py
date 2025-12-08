@@ -5,7 +5,7 @@ import numpy as np
 from shapely.geometry import Polygon, LineString
 from shapely.ops import split
 from shapely import affinity
-import completesurvey as cs
+import custom_survey as cs
 # --------------- CONFIG ----------------
 
 PLAN_FILE = "generated_polygons/polygon_16_sides.plan"  # change as needed
