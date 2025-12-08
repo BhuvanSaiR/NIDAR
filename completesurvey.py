@@ -7,7 +7,7 @@ from shapely.geometry import Polygon, LineString
 from shapely.ops import split
 from shapely import affinity
 
-PLAN_FILE = "generated_polygons/polygon_5_sides.plan"   # change if needed
+PLAN_FILE = "generated_polygons/polygon_3_sides.plan"   # change if needed
 
 FEET_PER_METER = 3.280839895  # approx conversion
 
@@ -65,15 +65,12 @@ def load_polygon_from_plan_in_meters(path):
     lat0 = sum(lats) / len(lats)
     lon0 = sum(lons) / len(lons)
 
-    coords_m = []
-    m_per_deg_lat = None
-    m_per_deg_lon = None
+    _, _, m_per_deg_lat, m_per_deg_lon = latlon_to_local_xy_m(lat0, lon0, lat0, lon0)
 
+    coords_m = []
     for lat, lon in zip(lats, lons):
-        x, y, m_lat, m_lon = latlon_to_local_xy_m(lat, lon, lat0, lon0)
+        x, y, _, _ = latlon_to_local_xy_m(lat, lon, lat0, lon0)
         coords_m.append((x, y))
-        m_per_deg_lat = m_lat
-        m_per_deg_lon = m_lon
 
     poly_m = Polygon(coords_m)
     if not poly_m.is_valid:
@@ -245,9 +242,6 @@ def compute_survey_path(poly_m, angle_deg, separation_m):
     # So we don't need extra margin here; we just sweep fully across inner_rot.
     first_y = miny
     last_y = maxy
-
-    if last_y < first_y:
-        return None
 
     y_values = np.arange(first_y, last_y + 1e-9, separation_m)
     diag = math.hypot(maxx - minx, maxy - miny)
