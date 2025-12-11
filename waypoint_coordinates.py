@@ -9,7 +9,8 @@ from shapely import affinity
 # --------------- CONFIG ----------------
 
 PLAN_FILE = "generated_polygons/polygon_16_sides.plan"  # change as needed
-OUTPUT_FILE = "split_waypoints.json"
+HALF1_FILE = "half1_waypoints.txt"
+HALF2_FILE = "half2_waypoints.txt"
 
 
 # --------------- 0. Lat/Lon -> local meters ----------------
@@ -354,6 +355,7 @@ def extract_turn_points(path: LineString, takeoff_xy, eps=1e-6):
 
         cross = v1[0] * v2[1] - v1[1] * v2[0]
 
+        # Non-collinear => turning point
         if abs(cross) > eps:
             turn_points.append((x_cur, y_cur))
 
@@ -451,68 +453,35 @@ def main():
         turn_pts_half1_xy, takeoff_xy, lat0, lon0, m_per_deg_lat, m_per_deg_lon
     )
 
-    # For half2 we reuse same takeoff reference; so we get same TO lat/lon
     _, _, half2_turn_latlon = local_xy_turns_to_latlon(
         turn_pts_half2_xy, takeoff_xy, lat0, lon0, m_per_deg_lat, m_per_deg_lon
     )
 
-    # Build ordered waypoint lists for each half:
-    #   TAKEOFF, all TURN corners, LAND
-    # (Note: turn_pts_* already includes TO at index 0 and TO at last index)
+    # Build ordered waypoint lists: TAKEOFF, all TURNs, LAND
     def build_waypoint_list(turn_latlon_list):
         waypoints = []
-        # TAKEOFF
-        waypoints.append({
-            "type": "TAKEOFF",
-            "lat": takeoff_lat,
-            "lon": takeoff_lon,
-        })
-        # interior turning points (excluding first and last since they are TO)
-        for i in range(1, len(turn_latlon_list) - 1):
-            lat, lon = turn_latlon_list[i]
-            waypoints.append({
-                "type": "TURN",
-                "index": i - 1,
-                "lat": lat,
-                "lon": lon,
-            })
-        # LAND
-        waypoints.append({
-            "type": "LAND",
-            "lat": takeoff_lat,
-            "lon": takeoff_lon,
-        })
+        # first is TO, last is TO again, but we want:
+        # TAKEOFF (first), interior turns, LAND (last)
+        for (lat, lon) in turn_latlon_list:
+            waypoints.append((lat, lon))
         return waypoints
 
     waypoints_half1 = build_waypoint_list(half1_turn_latlon)
     waypoints_half2 = build_waypoint_list(half2_turn_latlon)
 
-    output = {
-        "plan_file": PLAN_FILE,
-        "separation_m": separation_m,
-        "takeoff": {
-            "lat": takeoff_lat,
-            "lon": takeoff_lon,
-        },
-        "half1": {
-            "best_angle_deg": angle_half1,
-            "survey_length_m": survey_len1,
-            "total_length_m": total_len1,
-            "waypoints_ordered": waypoints_half1
-        },
-        "half2": {
-            "best_angle_deg": angle_half2,
-            "survey_length_m": survey_len2,
-            "total_length_m": total_len2,
-            "waypoints_ordered": waypoints_half2
-        }
-    }
+    # ---- Write .txt files: each line "lat,lon" ----
+    with open(HALF1_FILE, "w", encoding="utf-8") as f1:
+        for lat, lon in waypoints_half1:
+            f1.write(f"{lat},{lon}\n")
 
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        json.dump(output, f, indent=4)
+    with open(HALF2_FILE, "w", encoding="utf-8") as f2:
+        for lat, lon in waypoints_half2:
+            f2.write(f"{lat},{lon}\n")
 
-    print(f"\nSplit-survey waypoints saved to: {OUTPUT_FILE}")
-    print("Each half has: TAKEOFF -> TURN corners -> LAND, in lat, lon format.")
+    print(f"\nHalf 1 waypoints written to: {HALF1_FILE}")
+    print(f"Half 2 waypoints written to: {HALF2_FILE}")
+    print("Format: each line is 'lat,lon' (no labels).")
+    print("Order in each file: TAKEOFF -> all turning corners -> LAND.")
 
 
 if __name__ == "__main__":
