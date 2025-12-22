@@ -1,0 +1,56 @@
+<!-- templates/index.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>RasPi Webcam Stream</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; padding: 1rem; background:#f7f7f8; color:#111;}
+    .card { max-width: 900px; margin: 0 auto; background: #fff; padding: 1rem; border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.06);}
+    img { width: 100%; height: auto; border-radius: 8px; display:block; margin-bottom: 0.75rem;}
+    .controls { display:flex; gap: .5rem; flex-wrap:wrap; }
+    button { padding: .5rem .75rem; border-radius:8px; border: none; cursor:pointer; background:#0066cc; color:white; }
+    .muted { background:#666; }
+    a.small { font-size:.9rem; color:#0066cc; text-decoration:none; margin-left:.5rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Raspberry Pi Webcam Stream</h2>
+    <p>Live stream from your USB Zebronics webcam.</p>
+
+    <div>
+      <img id="stream" src="{{ url_for('video_feed') }}" alt="Live stream from camera" />
+    </div>
+
+    <div class="controls">
+      <button onclick="takeSnapshot()">Take snapshot</button>
+      <a class="small" id="snap-link" href="#" target="_blank" style="display:none">Open snapshot</a>
+      <button class="muted" onclick="location.reload()">Reload page</button>
+    </div>
+
+    <p style="margin-top:.75rem; color:#666;">If stream fails, verify camera device (/dev/video*), permissions, or restart the app.</p>
+  </div>
+
+  <script>
+    async function takeSnapshot() {
+      try {
+        const resp = await fetch('/snapshot');
+        if (!resp.ok) {
+          alert('Snapshot failed: ' + resp.statusText);
+          return;
+        }
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.getElementById('snap-link');
+        link.href = url;
+        link.style.display = 'inline-block';
+        link.textContent = 'Open snapshot (' + new Date().toLocaleTimeString() + ')';
+      } catch (e) {
+        alert('Snapshot error: ' + e.message);
+      }
+    }
+  </script>
+</body>
+</html>
