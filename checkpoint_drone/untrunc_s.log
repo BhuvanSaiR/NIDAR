@@ -1,0 +1,11 @@
+Info: version 'v367-13cafed' using ffmpeg '5.1.7-0+deb12u1+rpt1' Lavc59.37.100
+Info: reading today.mp4
+Info: parsing healthy moov atom ... 
+
+Info: reading mdat from truncated file ...
+0%  Info: Found 1489 packets ( mp4v: 1489 )
+Info: Duration of mp4v: 24min 49s  (1489000 ms)
+Warning: Unknown sequences: 176
+Warning: Bytes NOT matched: 176B (0.00146%)
+Info: saving corrupt.mp4_fixed-s1.mp4
+7.7%  18.2%  28%  34.8%  42.5%  45.8%  52.7%  57.7%  65%  68.5%  76.3%  83.6%  86.8%  89.9%  93.5%  99.2%  
